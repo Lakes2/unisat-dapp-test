@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>unisat Dapp test</title>
+  <style>
+    .list li {
+      /* display: flex;
+      justify-content: center;
+      align-items: center; */
+      width: 100%;
+      font-size: 16px;
+      list-style: none;
+      padding: 10px 0;
+      text-align: center;
+    }
+    button {
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">unisat Dapp method test</h1>
+  <ul class="list">
+  </ul>
+  <script>
+    let list = ['requestAccounts', 'getNetwork', 'switchNetwork', 'getAccounts', 'getPublicKey', 'getBalance',  'getInscriptions', 'signMessage']
+    let liDom = list.map((item) => `<li class="item-${item}"><button class="btn-${item}">${item}</button><div class="loading-${item}"></div><div class="result-${item}"></div></li>`).join('')
+    document.querySelector('.list').innerHTML = liDom
+    document.querySelector('.list').addEventListener('click', async (e) => {
+      list.forEach(async (item) => {
+        if (e.target.classList.contains(`btn-${item}`)) {
+          document.querySelector(`.loading-${item}`).innerHTML = '加载中...'
+          document.querySelector(`.result-${item}`).innerHTML = ''
+          let re
+          if (item === 'signMessage') {
+            re = await unisat?.[item]?.('test signMessage').catch(async (err) => {
+              if (err.code === 4001) {
+                return '用户拒绝'
+              }
+              return err.message
+            })
+          } else if (item === 'switchNetwork') {
+            let networks = ['livenet', 'testnet']
+            let network = await unisat.getNetwork()
+            let n = networks.find((item) => item !== network)
+            re = await unisat?.[item]?.(n).catch(async (err) => {
+              if (err.code === 4001) {
+                return '用户拒绝'
+              }
+              return err.message
+            })
+          } else {
+            re = await unisat?.[item]?.() || ''
+          }
+          document.querySelector(`.result-${item}`).innerHTML = JSON.stringify(re, null, 2)
+          document.querySelector(`.loading-${item}`).innerHTML = ''
+        }
+      })      
+    })
+  </script>
+</body>
+</html>
