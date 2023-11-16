@@ -52,7 +52,12 @@
               return err.message
             })
           } else {
-            re = await unisat?.[item]?.() || ''
+            re = await unisat?.[item]?.().catch(async (err) => {
+              if (err.code === 4001) {
+                return '用户拒绝'
+              }
+              return err.message
+            })
           }
           document.querySelector(`.result-${item}`).innerHTML = JSON.stringify(re, null, 2)
           document.querySelector(`.loading-${item}`).innerHTML = ''
