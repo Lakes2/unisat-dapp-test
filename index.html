@@ -15,8 +15,13 @@
       padding: 10px 0;
       text-align: center;
     }
+    .list li .result {
+      max-height: 300px;
+      overflow-y: auto;
+    }
     button {
       padding: 5px 10px;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -26,7 +31,7 @@
   </ul>
   <script>
     let list = ['requestAccounts', 'getNetwork', 'switchNetwork', 'getAccounts', 'getPublicKey', 'getBalance',  'getInscriptions', 'signMessage']
-    let liDom = list.map((item) => `<li class="item-${item}"><button class="btn-${item}">${item}</button><div class="loading-${item}"></div><div class="result-${item}"></div></li>`).join('')
+    let liDom = list.map((item) => `<li class="item-${item}"><button class="btn-${item}">${item}</button><div class="loading-${item}"></div><div class="result result-${item}"></div></li>`).join('')
     document.querySelector('.list').innerHTML = liDom
     document.querySelector('.list').addEventListener('click', async (e) => {
       list.forEach(async (item) => {
